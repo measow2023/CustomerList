@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "angular.js@1.6.9",
+      "destination": "wwwroot/lib/angular.js/"
+    }
+  ]
+}
