@@ -28,12 +28,12 @@ public class CustomerListController : ControllerBase
     public ActionResult<ICustomerItem> GetById(int customerId)
     {
         ICustomerRepository customerRepo = _dataFactory.Create();
-        CustomerItem customer = (CustomerItem) customerRepo.GetCustomerById(customerId);
-        if (customer is null)
+        CustomerItem customerItem = (CustomerItem) customerRepo.GetCustomerById(customerId);
+        if (customerItem is null)
         {
             return NotFound();
         }
-        return Ok(customer);
+        return Ok(customerItem);
     }
 
     [HttpPost(Name = "Create Customer")]
@@ -64,12 +64,12 @@ public class CustomerListController : ControllerBase
     public ActionResult Delete(int id)
     {
         ICustomerRepository customerRepo = _dataFactory.Create();
-        CustomerItem customer = (CustomerItem)customerRepo.GetCustomerById(id);
-        if (customer is null)
+        var customerItem = (CustomerItem)customerRepo.GetCustomerById(id);
+        if (customerItem is null)
         {
             return NotFound();
         }
-        customer.Delete();
+        customerItem.Delete();
         return NoContent();
     }
 }
