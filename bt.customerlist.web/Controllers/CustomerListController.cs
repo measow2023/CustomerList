@@ -64,12 +64,12 @@ public class CustomerListController : ControllerBase
     public ActionResult Delete(int id)
     {
         ICustomerRepository customerRepo = _dataFactory.Create();
-        CustomerItem customer = (CustomerItem)customerRepo.GetCustomerById(id);
-        if (customer is null)
+        var customerItem = (CustomerItem)customerRepo.GetCustomerById(id);
+        if (customerItem is null)
         {
             return NotFound();
         }
-        customer.Delete();
+        customerItem.Delete();
         return NoContent();
     }
 }
