@@ -2,7 +2,7 @@
     ViewData["Title"] = "Customer List";
 }
 
-<input type="text" ng-model="lastNameFilter" placeholder="Filter By Last Name" />
+<input type="text" ng-model="byNameFilter" placeholder="Filter By Last Name" />
 <table class="table table-striped">
     <thead>
         <tr>
@@ -14,7 +14,7 @@
         </tr>
     </thead>
     <tbody ng-controller="customerListController">
-        <tr ng-repeat="customer in customerList | filter:lastNameFilter">
+        <tr ng-repeat="customer in customerList | filter: { lastName: byNameFilter}">
             <td>{{$index + 1}}</td>
             <td>{{customer.firstName}}</td>
             <td>{{customer.lastName}}</td>
