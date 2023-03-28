@@ -1,5 +1,3 @@
-
-
 using bt.customerlist.data;
 
 var builder = WebApplication.CreateBuilder(args);

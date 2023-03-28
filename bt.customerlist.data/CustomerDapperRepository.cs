@@ -13,16 +13,16 @@ public class CustomerDapperRepository : ICustomerRepository
 
     public ICustomerItem GetCustomerById(int id)
     {
-        var query = @"SELECT Id,
-                        FirstName,
-                        LastName,
-                        CompanyName,
-                        Street,
-                        City,
-                        State,
-                        Zip
-                        FROM Customer
-                        WHERE Id = @id";
+        const string query = @"SELECT Id,
+                                FirstName,
+                                LastName,
+                                CompanyName,
+                                Street,
+                                City,
+                                State,
+                                Zip
+                                FROM Customer
+                                WHERE Id = @id";
 
         using var connection = new SqliteConnection(_databaseConfig.Name);
         CustomerDto customerDto = connection.Query<CustomerDto>(query, new { id }).FirstOrDefault();
@@ -31,11 +31,19 @@ public class CustomerDapperRepository : ICustomerRepository
 
     public IEnumerable<ICustomerItem> GetList()
     {
-        List<CustomerItem> result = new List<CustomerItem>();
+        const string query = @"SELECT Id,
+                                FirstName,
+                                LastName,
+                                CompanyName,
+                                Street,
+                                City,
+                                State,
+                                Zip
+                                FROM Customer";
+        List<CustomerItem> result = new();
         using var connection = new SqliteConnection(_databaseConfig.Name);
-        IEnumerable<CustomerDto> customDtos = connection.Query<CustomerDto>(@"SELECT Id, FirstName, LastName, CompanyName, Street, City, State, Zip FROM Customer").ToList();
-        result = customDtos.Select(x => new CustomerItem(x, this)).ToList();
-        return result;
+        IEnumerable<CustomerDto> customDtoList = connection.Query<CustomerDto>(query).ToList();
+        return customDtoList.Select(x => new CustomerItem(x, this)).ToList();
     }
 
     public ICustomerItem GetNewCustomer()
@@ -45,7 +53,7 @@ public class CustomerDapperRepository : ICustomerRepository
 
     public bool DeleteCustomer(int id)
     {
-        var query = @"DELETE FROM Customer WHERE Id = @id";
+        const string query = "DELETE FROM Customer WHERE Id = @id";
         using var connection = new SqliteConnection(_databaseConfig.Name);
         int rowsAffected = connection.Execute(query, new { id });
         return rowsAffected > 0;
@@ -53,8 +61,8 @@ public class CustomerDapperRepository : ICustomerRepository
 
     public bool Save(CustomerDto customerDto)
     {
-        var query = @"INSERT INTO Customer
-                    (Id,
+        const string query = @"INSERT INTO Customer(
+                        Id,
                         FirstName,
                         LastName,
                         CompanyName,
@@ -62,7 +70,8 @@ public class CustomerDapperRepository : ICustomerRepository
                         City,
                         State,
                         Zip)
-                    VALUES(@Id,
+                    VALUES(
+                        @Id,
                         @FirstName,
                         @LastName,
                         @CompanyName,
@@ -71,15 +80,14 @@ public class CustomerDapperRepository : ICustomerRepository
                         @State,
                         @Zip);";
         using var connection = new SqliteConnection(_databaseConfig.Name);
-        int nextId = GetNextCustomerId();
-        customerDto.Id = nextId;
+        customerDto.Id = GetNextCustomerId();
         int rowsAffected = connection.Execute(query, customerDto);
         return rowsAffected > 0;
     }
 
     private int GetNextCustomerId()
     {
-        var query = @"SELECT CAST((MAX(Id) + 1) AS INT)  FROM Customer";
+        const string query = "SELECT CAST((MAX(Id) + 1) AS INT)  FROM Customer";
         using var connection = new SqliteConnection(_databaseConfig.Name);
         var nextCustomerId = (long)connection.ExecuteScalar(query);
         return Convert.ToInt32(nextCustomerId);
